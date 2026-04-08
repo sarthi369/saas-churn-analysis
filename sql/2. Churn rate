@@ -1,3 +1,15 @@
+--Retention Status count
 SELECT retention_status, COUNT(*) AS user_count
 FROM customer_data
 GROUP BY retention_status;
+
+-- Churn rate
+WITH counts AS (
+    SELECT 
+        COUNT(*) AS total_users,
+        SUM(CASE WHEN retention_status = 'churned' THEN 1 ELSE 0 END) AS churned_users
+    FROM customer_data
+)
+SELECT 
+    Round(churned_users * 100.00 / total_users, 2) AS churn_rate
+FROM counts;
