@@ -1,0 +1,4 @@
+Select gender,
+Round(Sum(Case when retention_status = 'Churned' then 1 Else 0 END) * 100.00 / Count(*), 2) as churn_rate
+From customer_data
+Group by gender;
