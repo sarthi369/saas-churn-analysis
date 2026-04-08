@@ -1,0 +1,16 @@
+ With satis_buckets as (
+ Select retention_status,
+ Case
+ When satisfaction_score between 1 and 3 then 'Low'
+ When satisfaction_score between 4 and 7 then 'Medium'
+ When satisfaction_score between 8 and 10 then 'High'
+ Else 'Unknown'
+ End as satisfaction_groups
+ From customer_data
+ )
+Select satisfaction_groups,
+count(*) as total_users,
+round(Sum(Case when retention_status = 'churned' then 1 else 0 end) *100 / count(*), 2) as churn_rate
+From satis_buckets
+group by satisfaction_groups
+order by churn_rate desc;
