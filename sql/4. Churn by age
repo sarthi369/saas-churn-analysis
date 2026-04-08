@@ -1,0 +1,18 @@
+With age_buckets as (
+Select retention_status,
+Case
+When age between 18 And 25 then '18-25'
+When age between 26 and 35 then '26-35'
+When age between 36 and 50 then '36-50'
+When age > 50 then '50+'
+Else 'Unknown'
+End as age_groups
+From customer_data
+)
+
+Select age_groups,
+Count(*) as total_users,
+Round(Sum(Case when retention_status = 'Churned' then 1 Else 0 END) * 100.00 / Count(*), 2) as churn_rate
+From age_buckets
+Group by age_groups
+Order by age_groups;
