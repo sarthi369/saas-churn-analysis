@@ -1,0 +1,34 @@
+-- Churn Analysis based on purchasing patters
+WITH purchase_buckets AS (
+    SELECT 
+        Retention_Status,
+        CASE 
+            WHEN Products_Purchased = 0 THEN '0'
+            WHEN Products_Purchased BETWEEN 1 AND 2 THEN '1–2'
+            WHEN Products_Purchased BETWEEN 3 AND 5 THEN '3–5'
+            WHEN Products_Purchased >= 6 THEN '6+'
+            ELSE 'Unknown'
+        END AS purchase_groups
+    FROM customer_data
+)
+SELECT 
+    purchase_groups,
+    COUNT(*) AS total_users,
+    ROUND(SUM(CASE WHEN Retention_Status = 'Churned' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS churn_rate
+FROM purchase_buckets
+GROUP BY purchase_groups
+ORDER BY churn_rate DESC;
+---------------------------------------------------------------------------------------------------------------------------------------------
+-- Based on segments
+SELECT 
+    CASE 
+        WHEN products_purchased <= 2 THEN 'Low Purchase'
+        ELSE 'High Purchase'
+    END AS purchase_segment,
+    COUNT(*) AS total_users,
+    ROUND(
+        SUM(CASE WHEN retention_status = 'Churned' THEN 1 ELSE 0 END) * 100.0 
+        / COUNT(*), 
+    2) AS churn_rate
+FROM customer_data
+GROUP BY purchase_segment;
