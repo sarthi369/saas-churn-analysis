@@ -1,0 +1,3 @@
+SELECT retention_status, COUNT(*) AS user_count
+FROM customer_data
+GROUP BY retention_status;
