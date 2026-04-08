@@ -1,0 +1,17 @@
+USE saas_analysis;
+
+SELECT *
+FROM customer_data
+LIMIT 10;
+
+SELECT 
+COUNT(*) - COUNT(customer_id) AS missing_customer_id,
+COUNT(*) - COUNT(age) AS missing_age,
+COUNT(*) - COUNT(num_interactions) AS missing_interactions,
+COUNT(*) - COUNT(retention_status) AS missing_retention
+FROM customer_data;
+
+SELECT customer_id, COUNT(*) as occurrence_count
+FROM customer_data
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
